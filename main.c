@@ -34,13 +34,8 @@ int main(int argc, char* argv[]) {
       {
         broadcast(argv,handle);       //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
       }
+      process(argv,handle);
 
-
-      while(1)
-      {
-        process(argv,handle);
-
-      }
 
       pcap_close(handle);
       return 0;

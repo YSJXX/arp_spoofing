@@ -1,17 +1,19 @@
 #include <stdint.h>
 #include <stdlib.h>
-
+#include <pcap.h>
 #pragma once
 #define ARPHEADER_H
 
 #define PACKETSIZE sizeof(struct allpacket)
+
+
+static int argcs;
+static u_int32_t save_ip[100];
+
+void broadcast(char* argv[],pcap_t* handle);
+void process(char *argv[],pcap_t* handle);
+
 #pragma pack(push,1)
-
-int argcs;
-
-
-
-
 struct allpacket
 {
     u_int8_t eth_dmac[6];
