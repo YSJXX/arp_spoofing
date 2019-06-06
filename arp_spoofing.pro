@@ -6,9 +6,7 @@ LIBS += -lpcap
 LIBS += -lpthread
 SOURCES += \
         main.c \
-    broadcast.c \
-    process.c \
-    ᅟinfect.c
+    broadcast.c
 
 HEADERS += \
     arpheader.h
