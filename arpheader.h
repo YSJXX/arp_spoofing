@@ -9,6 +9,8 @@
 
 void broadcast(char* argv[],pcap_t *handle);
 
+u_int8_t mymac[6];
+char myip[40];
 #pragma pack(push,1)
 struct allpacket
 {
@@ -35,10 +37,6 @@ struct jsave
     u_int32_t save_sip;     //123.105
     u_int8_t save_tmac[6];  //bc:fa
     u_int32_t save_tip;     //123.1
-    pcap_t *handle;
-    struct pcap_pkthdr* header;
-    const u_char* packet;
-    u_int8_t mymac[6];      //bc:fa
     u_int8_t gateway[6];    //ff:05
 };
 
