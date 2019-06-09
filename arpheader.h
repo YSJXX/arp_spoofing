@@ -33,9 +33,8 @@ struct allpacket
 
 struct jsave
 {
-    u_int8_t save_smac[6];  //90:aa
-    u_int32_t save_sip;     //123.105
-    u_int8_t save_tmac[6];  //bc:fa
+    u_int8_t save_smac[6];  //Sender Mac
+    u_int32_t save_sip;     //123.102 Sender IP
     u_int32_t save_tip;     //123.1
     u_int8_t gateway[6];    //ff:05
 };
