@@ -146,28 +146,7 @@ void* thread_relay (void* arg)
               //memcpy(&eth_hdr->ether_shost[i],&add_save->mymac[i],sizeof (add_save->mymac[i]));
           }
 
-/*
-            eth_hdr->ether_shost[0] = 0x88;
-            eth_hdr->ether_shost[1] = 0x36;
-            eth_hdr->ether_shost[2] = 0x6c;
-            eth_hdr->ether_shost[3] = 0xfa;
-            eth_hdr->ether_shost[4] = 0xbc;
-            eth_hdr->ether_shost[5] = 0xfa;
 
-            eth_hdr->ether_dhost[0] = 0xe2;
-            eth_hdr->ether_dhost[1] = 0xa6;
-            eth_hdr->ether_dhost[2] = 0x00;
-            eth_hdr->ether_dhost[3] = 0x5b;
-            eth_hdr->ether_dhost[4] = 0x81;
-            eth_hdr->ether_dhost[5] = 0x64;
-
-            eth_hdr->ether_dhost[0] = 0x08;
-            eth_hdr->ether_dhost[1] = 0x5d;
-            eth_hdr->ether_dhost[2] = 0xdd;
-            eth_hdr->ether_dhost[3] = 0x79;
-            eth_hdr->ether_dhost[4] = 0xff;
-            eth_hdr->ether_dhost[5] = 0x05;
-*/
 
             memcpy(cp_packet,packet,pktsize);
             res = pcap_sendpacket(handle,cp_packet,(int)pktsize);
