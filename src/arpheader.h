@@ -20,8 +20,8 @@
 
 #define PACKETSIZE sizeof(struct allpacket)
 
-void broadcast(char *argv[], pcap_t *handle);
-void gateway_mac(char *argv[], pcap_t *handle);
+void broadcast(char *argv[], pcap_t *pcapHandle);
+void gateway_mac(char *argv[], pcap_t *pcapHandle);
 int check_mac(u_int8_t *mac1, u_int8_t *mac2);
 
 u_int8_t mymac[6];

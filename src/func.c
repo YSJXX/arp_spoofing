@@ -1,6 +1,6 @@
 ﻿#include "arpheader.h"
 
-void broadcast(char *argv[], pcap_t *handle)
+void broadcast(char *argv[], pcap_t *pcapHandle)
 {
       /*
       ARP
@@ -54,7 +54,7 @@ void broadcast(char *argv[], pcap_t *handle)
 
       s_packet->arp_target_ip = inet_addr(argv[2]);
 
-      int res = pcap_sendpacket(handle, pkt, sizeof(pkt));
+      int res = pcap_sendpacket(pcapHandle, pkt, sizeof(pkt));
 
       if (res == -1)
             printf(" error\n");
@@ -62,7 +62,7 @@ void broadcast(char *argv[], pcap_t *handle)
             printf("BroadCast success \n");
 }
 
-void gateway_mac(char *argv[], pcap_t *handle)
+void gateway_mac(char *argv[], pcap_t *pcapHandle)
 {
       /*
       Ethernet--------------------
@@ -112,7 +112,7 @@ void gateway_mac(char *argv[], pcap_t *handle)
 
       s_packet->arp_target_ip = inet_addr(argv[3]); // 속일 ip 주소
 
-      int res = pcap_sendpacket(handle, pkt, sizeof(pkt));
+      int res = pcap_sendpacket(pcapHandle, pkt, sizeof(pkt));
 
       if (res == -1)
             printf(" error\n");
