@@ -5,7 +5,7 @@ void *thread_infect(void *arg) //감염패킷킷
 {
 
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t *handle = pcap_open_live("wlan0", BUFSIZ, 1, 1, errbuf);
+    pcap_t *handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
 
     struct jsave *addr_save = (struct jsave *)arg;
 
