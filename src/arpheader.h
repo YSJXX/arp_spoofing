@@ -19,12 +19,14 @@
 #define ARPHEADER_H
 #define REQUEST 1
 #define REPLY 2
+#define BROADCAST 100
+#define GATEWAY 101
 #define PACKETSIZE sizeof(struct eth_arp_header)
 
 void sendBroadcast(char *argv[], pcap_t *pcap_handle);
 void getGatewayMac(char *argv[], pcap_t *pcap_handle);
 int compareMac(u_int8_t *mac1, u_int8_t *mac2);
-void insertPacketField(u_int8_t *pkt, char *argv[]);
+void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type);
 
 u_int8_t mymac[6];
 char myip[40];
@@ -48,9 +50,9 @@ struct eth_arp_header
 
 struct infect_addr_save
 {
-    u_int8_t save_target_mac[6]; // Sender mac
-    u_int32_t save_target_ip;    // 공격 대상 IP
-    u_int32_t save_gateway_ip;   // Gateway ip
+    u_int8_t save_target_mac[6];
+    u_int32_t save_target_ip;
+    u_int32_t save_gateway_ip;
     u_int8_t save_gateway_mac[6];
 };
 
