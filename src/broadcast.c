@@ -45,7 +45,6 @@ void broadcast(char *argv[], pcap_t *handle)
       }
       // 게이트웨이 주소 ( = 공격 대상의 IP = 게이트웨이 또한 공격 대상
       s_packet->arp_sender_ip = inet_addr(argv[3]); // argv[3] = Gateway mac Address
-      // inet_aton(argv[3],&s_packet->arp_sender_ip);
 
       // 속일 mac 주소(Sender의 mac 주소)(공격 당하는 사람)
       for (int i = 0; i <= 5; i++)
@@ -53,7 +52,6 @@ void broadcast(char *argv[], pcap_t *handle)
             s_packet->arp_target_mac[i] = 0x00;
       }
 
-      // inet_aton(argv[2],&s_packet->arp_target_ip);  // 속일 ip 주소
       s_packet->arp_target_ip = inet_addr(argv[2]);
 
       int res = pcap_sendpacket(handle, pkt, sizeof(pkt));
@@ -104,7 +102,6 @@ void gateway_mac(char *argv[], pcap_t *handle)
             s_packet->arp_sender_mac[i] = s_packet->eth_smac[i];
       }
 
-      // inet_aton(argv[3],&s_packet->arp_sender_ip);
       s_packet->arp_sender_ip = inet_addr(myip);
 
       // 속일 mac 주소(Sender의 mac 주소)(공격 당하는 사람)
@@ -113,9 +110,7 @@ void gateway_mac(char *argv[], pcap_t *handle)
             s_packet->arp_target_mac[i] = 0x00;
       }
 
-      // inet_aton(argv[3], &s_packet->arp_target_ip);
       s_packet->arp_target_ip = inet_addr(argv[3]); // 속일 ip 주소
-      // s_packet->arp_target_ip = addr_save->save_tip;
 
       int res = pcap_sendpacket(handle, pkt, sizeof(pkt));
 

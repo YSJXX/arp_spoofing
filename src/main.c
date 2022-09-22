@@ -178,7 +178,6 @@ int main(int argc, char *argv[])
     const u_char *packet;
     struct pcap_pkthdr *header;
 
-    // char *dev = argv[1];
     char errbuf[PCAP_ERRBUF_SIZE];
     handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
     if (handle == NULL)
