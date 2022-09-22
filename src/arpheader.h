@@ -22,7 +22,7 @@
 
 void sendBroadcast(char *argv[], pcap_t *pcap_handle);
 void getGatewayMac(char *argv[], pcap_t *pcap_handle);
-int check_mac(u_int8_t *mac1, u_int8_t *mac2);
+int compareMac(u_int8_t *mac1, u_int8_t *mac2);
 
 u_int8_t mymac[6];
 char myip[40];

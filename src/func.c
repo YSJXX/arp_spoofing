@@ -120,7 +120,7 @@ void getGatewayMac(char *argv[], pcap_t *pcap_handle)
             printf("GateWay BroadCast success \n");
 }
 
-int check_mac(u_int8_t *mac1, u_int8_t *mac2)
+int compareMac(u_int8_t *mac1, u_int8_t *mac2)
 {
       for (int i = 0; i < 6; i++)
             if (mac1[i] != mac2[i])
