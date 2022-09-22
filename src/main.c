@@ -135,15 +135,6 @@ void *thread_relay(void *arg)
     }
 }
 
-int check_mac(u_int8_t *mac1, u_int8_t *mac2)
-{
-    for (int i = 0; i < 6; i++)
-        if (mac1[i] != mac2[i])
-            return 0;
-
-    return 1;
-}
-
 int main(int argc, char *argv[])
 {
     if (argc <= 2 || argc % 2 == 1)
