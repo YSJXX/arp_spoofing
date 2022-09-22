@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     }
 
     struct infect_addr_save *infect_addr_save;
-    pthread_t jthread[2];
+    pthread_t thread[2];
     while (1)
     {
         //감염 패킷 쓰레드
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
                 infect_addr_save->save_target_mac[i] = new_packet->eth_src_mac[i];
             }
 
-            pthread_create(&jthread[0], NULL, thread_infect, (void *)infect_addr_save);
+            pthread_create(&thread[0], NULL, thread_infect, (void *)infect_addr_save);
             break;
         }
     }
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    pthread_create(&jthread[1], NULL, thread_relay, (void *)infect_addr_save);
+    pthread_create(&thread[1], NULL, thread_relay, (void *)infect_addr_save);
 
     while (1)
     {
