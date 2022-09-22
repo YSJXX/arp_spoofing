@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
         }
     }
     sleep(2);
-    gateway_mac(argv, pcap_handle);
+    getGatewayMac(argv, pcap_handle);
 
     sleep(1);
     while (1)

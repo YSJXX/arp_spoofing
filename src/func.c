@@ -62,7 +62,7 @@ void sendBroadcast(char *argv[], pcap_t *pcap_handle)
             printf("BroadCast success \n");
 }
 
-void gateway_mac(char *argv[], pcap_t *pcap_handle)
+void getGatewayMac(char *argv[], pcap_t *pcap_handle)
 {
       /*
       Ethernet--------------------
