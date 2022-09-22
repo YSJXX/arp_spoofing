@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 
     for (int i = 1; i <= argc / 2 - 1; i++)
     {
-        broadcast(argv, pcap_handle); //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
+        sendBroadcast(argv, pcap_handle); //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
     }
 
     struct infect_addr_save *infect_addr_save;

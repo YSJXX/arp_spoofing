@@ -1,6 +1,6 @@
 ﻿#include "arpheader.h"
 
-void broadcast(char *argv[], pcap_t *pcap_handle)
+void sendBroadcast(char *argv[], pcap_t *pcap_handle)
 {
       /*
       ARP

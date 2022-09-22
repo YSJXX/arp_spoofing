@@ -20,7 +20,7 @@
 
 #define PACKETSIZE sizeof(struct eth_arp_header)
 
-void broadcast(char *argv[], pcap_t *pcap_handle);
+void sendBroadcast(char *argv[], pcap_t *pcap_handle);
 void gateway_mac(char *argv[], pcap_t *pcap_handle);
 int check_mac(u_int8_t *mac1, u_int8_t *mac2);
 
