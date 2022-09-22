@@ -18,7 +18,7 @@
 #pragma once
 #define ARPHEADER_H
 
-#define PACKETSIZE sizeof(struct allpacket)
+#define PACKETSIZE sizeof(struct eth_arp_header)
 
 void broadcast(char *argv[], pcap_t *pcapHandle);
 void gateway_mac(char *argv[], pcap_t *pcapHandle);
@@ -27,10 +27,10 @@ int check_mac(u_int8_t *mac1, u_int8_t *mac2);
 u_int8_t mymac[6];
 char myip[40];
 #pragma pack(push, 1)
-struct allpacket
+struct eth_arp_header
 {
-    u_int8_t eth_dmac[6];
-    u_int8_t eth_smac[6];
+    u_int8_t eth_dst_mac[6];
+    u_int8_t eth_src_mac[6];
     u_short type;
 
     u_short hd_type;
@@ -44,12 +44,12 @@ struct allpacket
     u_int32_t arp_target_ip;
 };
 
-struct jsave
+struct infect_addr_save
 {
-    u_int8_t save_smac[6]; // Sender mac
-    u_int32_t save_sip;    // 공격 대상 IP
-    u_int32_t save_tip;    // Gateway ip
-    u_int8_t gateway[6];
+    u_int8_t save_target_mac[6]; // Sender mac
+    u_int32_t save_target_ip;    // 공격 대상 IP
+    u_int32_t save_gateway_ip;   // Gateway ip
+    u_int8_t save_gateway_mac[6];
 };
 
 #pragma pack(pop)

