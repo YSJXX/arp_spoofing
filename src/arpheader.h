@@ -23,10 +23,6 @@
 #define GATEWAY 101
 #define PACKETSIZE sizeof(struct eth_arp_header)
 
-void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type);
-int compareMac(u_int8_t *mac1, u_int8_t *mac2);
-void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type);
-
 u_int8_t broadcast_mac[6];
 u_int8_t mymac[6];
 char myip[40];
@@ -55,6 +51,11 @@ struct infect_addr_save
     u_int32_t save_gateway_ip;
     u_int8_t save_gateway_mac[6];
 };
+
+void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type);
+int compareMac(u_int8_t *mac1, u_int8_t *mac2);
+void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type);
+void insertInfectPacketField(struct eth_arp_header *infect, struct infect_addr_save *infect_addr_save, char current);
 
 #pragma pack(pop)
 
