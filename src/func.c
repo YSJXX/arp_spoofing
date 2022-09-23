@@ -1,27 +1,15 @@
 ﻿#include "arpheader.h"
 
-void sendBroadcast(char *argv[], pcap_t *pcap_handle)
+void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type)
 {
       u_int8_t pkt[PACKETSIZE];
-      insertPacketField(pkt, argv, BROADCAST);
+      insertPacketField(pkt, argv, type);
       int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
 
       if (res == -1)
             printf(" error\n");
       else
             printf("BroadCast success \n");
-}
-
-void getGatewayMac(char *argv[], pcap_t *pcap_handle)
-{
-      u_char pkt[PACKETSIZE];
-      insertPacketField(pkt, argv, GATEWAY);
-      int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
-
-      if (res == -1)
-            printf(" error\n");
-      else
-            printf("GateWay BroadCast success \n");
 }
 
 int compareMac(u_int8_t *mac1, u_int8_t *mac2)
@@ -52,10 +40,10 @@ void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type)
       for (int i = 0; i <= 5; i++)
             send_packet->arp_sender_mac[i] = mymac[i];
 
-      send_packet->arp_sender_ip = type == BROADCAST ? inet_addr(argv[3]) : inet_addr(myip);
+      send_packet->arp_sender_ip = type == TARGET ? inet_addr(argv[3]) : inet_addr(myip);
 
       for (int i = 0; i <= 5; i++)
             send_packet->arp_target_mac[i] = 0x00;
 
-      send_packet->arp_target_ip = type == BROADCAST ? inet_addr(argv[2]) : inet_addr(argv[3]);
+      send_packet->arp_target_ip = type == TARGET ? inet_addr(argv[2]) : inet_addr(argv[3]);
 }

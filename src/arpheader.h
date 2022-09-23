@@ -19,12 +19,11 @@
 #define ARPHEADER_H
 #define REQUEST 1
 #define REPLY 2
-#define BROADCAST 100
+#define TARGET 100
 #define GATEWAY 101
 #define PACKETSIZE sizeof(struct eth_arp_header)
 
-void sendBroadcast(char *argv[], pcap_t *pcap_handle);
-void getGatewayMac(char *argv[], pcap_t *pcap_handle);
+void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type);
 int compareMac(u_int8_t *mac1, u_int8_t *mac2);
 void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type);
 
