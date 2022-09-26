@@ -4,9 +4,8 @@ void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type)
 {
       u_int8_t pkt[PACKETSIZE];
       insertPacketField(pkt, argv, type);
-      int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
 
-      if (res == -1)
+      if (pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1)
             printf(" error\n");
       else
             printf("BroadCast success \n");

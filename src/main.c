@@ -11,9 +11,8 @@ void *thread_infect(void *arg) //감염패킷
     while (1)
     {
         insertInfectPacketField(pkt, arg, TARGET);
-        int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
 
-        if (res == -1)
+        if (pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1)
             printf(" error\n");
         else
             printf("감염패킷 전송 성공! \n");
@@ -26,7 +25,6 @@ void *thread_relay(void *arg)
 {
     struct infect_addr_save *add_save = (struct infect_addr_save *)arg;
     char errbuf[PCAP_ERRBUF_SIZE];
-    int res;
     pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
     struct pcap_pkthdr *header;
     const u_char *packet;
@@ -52,8 +50,8 @@ void *thread_relay(void *arg)
                 eth_hdr->ether_shost[i] = mymac[i];
             }
             memcpy(cp_packet, packet, pktsize);
-            res = pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize);
-            if (res == -1)
+
+            if (pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1)
             {
                 printf(" error\n");
                 continue;
@@ -74,8 +72,8 @@ void *thread_relay(void *arg)
                 eth_hdr->ether_shost[i] = mymac[i];
             }
             memcpy(cp_packet, packet, pktsize);
-            res = pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize);
-            if (res == -1)
+
+            if (pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1)
                 printf(" error\n");
             else
                 printf("relay 전송 성공! \n");
