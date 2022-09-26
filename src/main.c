@@ -11,7 +11,7 @@ void *thread_infect(void *arg) //감염패킷
     int infect_target = TARGET;
     while (1)
     {
-        insertInfectPacketField(pkt, arg, infect_target);
+        insertInfectField(pkt, arg, infect_target);
         printf("%s\n", pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1 ? "error" : "감염패킷 전송 성공");
         infect_target = infect_target == TARGET ? GATEWAY : TARGET;
         sleep(3);
