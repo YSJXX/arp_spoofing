@@ -54,7 +54,6 @@ void *thread_relay(void *arg)
         }
         else if (compareMac(eth_hdr->ether_shost, add_save->save_gateway_mac) == 0 && ip_hdr->daddr == add_save->save_target_ip)
         {
-
             memcpy(eth_hdr->ether_dhost, add_save->save_target_mac, 6);
             memcpy(eth_hdr->ether_shost, mymac, 6);
             memcpy(cp_packet, packet, pktsize);
@@ -75,27 +74,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // my mac 구하는 함수  -------------------------------
     char *dev = argv[1];
-    struct ifreq s;
-    int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
-
-    strcpy(s.ifr_name, "enp0s3");
-    // strcpy(s.ifr_name, dev);
-    ioctl(fd, SIOCGIFHWADDR, &s);
-    memcpy(mymac, s.ifr_addr.sa_data, 6);
-    //--------------------------------------------
-
-    struct ifreq ifr;
-    int ss;
-    ss = socket(AF_INET, SOCK_DGRAM, 0);
-    strncpy(ifr.ifr_name, "enp0s3", IFNAMSIZ);
-    // strncpy(ifr.ifr_name, dev, IFNAMSIZ);
-
-    if (ioctl(ss, SIOCGIFADDR, &ifr) < 0)
-        printf("아이피 구하지 못힘 \n");
-    else
-        inet_ntop(AF_INET, ifr.ifr_addr.sa_data + 2, myip, sizeof(struct sockaddr));
+    getMyMacIp(dev);
 
     for (int i = 0; i < 6; ++i)
         broadcast_mac[i] = 0xFF;
