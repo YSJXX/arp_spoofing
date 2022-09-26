@@ -1,7 +1,7 @@
 #include <netinet/if_ether.h>
 #include "arpheader.h"
 
-void *thread_infect(void *arg) //감염패킷킷
+void *thread_infect(void *arg) //감염패킷
 {
     char errbuf[PCAP_ERRBUF_SIZE];
     pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
