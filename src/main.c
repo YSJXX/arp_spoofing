@@ -63,7 +63,8 @@ int main(int argc, char *argv[])
     }
 
     dev = argv[1];
-    getMyMacIp(dev);
+    if (getMyMacIp(dev) == -1)
+        return 0;
 
     for (int i = 0; i < 6; ++i)
         broadcast_mac[i] = 0xFF;

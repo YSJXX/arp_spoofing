@@ -67,7 +67,7 @@ void insertInfectPacketField(u_int8_t *pkt, void *arg, char current)
       memcpy(infect->arp_sender_mac, mymac, 6);
 }
 
-void getMyMacIp(char *dev)
+int getMyMacIp(char *dev)
 {
       struct ifreq ifr;
       int ss = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
@@ -75,12 +75,20 @@ void getMyMacIp(char *dev)
       strcpy(ifr.ifr_name, dev);
 
       if (ioctl(ss, SIOCGIFHWADDR, &ifr) < 0)
-            printf("Mac Address 구하지 못힘 \n");
+      {
+            printf("Mac Address 구하지 못함 \n");
+            return -1;
+      }
       else
             memcpy(mymac, ifr.ifr_addr.sa_data, 6);
 
       if (ioctl(ss, SIOCGIFADDR, &ifr) < 0)
-            printf("아이피 구하지 못힘 \n");
+      {
+            printf("아이피 구하지 못함 \n");
+            return -1;
+      }
       else
             inet_ntop(AF_INET, ifr.ifr_addr.sa_data + 2, myip, sizeof(struct sockaddr));
+
+      return 1;
 }
