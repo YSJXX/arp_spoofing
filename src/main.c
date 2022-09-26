@@ -11,12 +11,7 @@ void *thread_infect(void *arg) //감염패킷
     while (1)
     {
         insertInfectPacketField(pkt, arg, TARGET);
-
-        if (pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1)
-            printf(" error\n");
-        else
-            printf("감염패킷 전송 성공! \n");
-
+        printf("%s\n", pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1 ? "error" : "감염패킷 전송 성공");
         sleep(3);
     }
 }
@@ -47,21 +42,14 @@ void *thread_relay(void *arg)
             memcpy(eth_hdr->ether_shost, mymac, 6);
             memcpy(cp_packet, packet, pktsize);
 
-            if (pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1)
-                printf(" error\n");
-            else
-                printf("Sender relay 전송 성공! \n");
+            printf("%s\n", pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1 ? "error" : "Sender relay 전송 성공!");
         }
         else if (compareMac(eth_hdr->ether_shost, add_save->save_gateway_mac) == 0 && ip_hdr->daddr == add_save->save_target_ip)
         {
             memcpy(eth_hdr->ether_dhost, add_save->save_target_mac, 6);
             memcpy(eth_hdr->ether_shost, mymac, 6);
             memcpy(cp_packet, packet, pktsize);
-
-            if (pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1)
-                printf(" error\n");
-            else
-                printf("relay 전송 성공! \n");
+            printf("%s\n", pcap_sendpacket(pcap_handle, cp_packet, (int)pktsize) == -1 ? "error" : "relay 전송 성공!");
         }
     }
 }
