@@ -14,10 +14,7 @@ void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type)
 
 int compareMac(u_int8_t *mac1, u_int8_t *mac2)
 {
-      for (int i = 0; i < 6; i++)
-            if (mac1[i] != mac2[i])
-                  return 0;
-      return 1;
+      return memcmp(mac1, mac2, 6);
 }
 
 void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type)

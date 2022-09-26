@@ -43,7 +43,7 @@ void *thread_relay(void *arg)
         if (ip_hdr->daddr == inet_addr(myip))
             continue;
 
-        if (compareMac(eth_hdr->ether_shost, add_save->save_target_mac) == 1 && ip_hdr->saddr == add_save->save_target_ip)
+        if (compareMac(eth_hdr->ether_shost, add_save->save_target_mac) == 0 && ip_hdr->saddr == add_save->save_target_ip)
         {
 
             for (int i = 0; i < 6; i++)
@@ -65,7 +65,7 @@ void *thread_relay(void *arg)
             }
         }
 
-        if (compareMac(eth_hdr->ether_shost, add_save->save_gateway_mac) == 1 && ip_hdr->daddr == add_save->save_target_ip)
+        if (compareMac(eth_hdr->ether_shost, add_save->save_gateway_mac) == 0 && ip_hdr->daddr == add_save->save_target_ip)
         {
 
             for (int i = 0; i < 6; i++)
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
         pcap_next_ex(pcap_handle, &header, &packet);
         struct eth_arp_header *receive_packet = (struct eth_arp_header *)packet;
         // 공격 대상에서 reply가 왔다면 패킷 relay 시작
-        if (compareMac(receive_packet->eth_dst_mac, mymac) == 1 && receive_packet->arp_sender_ip == infect_addr_save->save_gateway_ip && ntohs(receive_packet->type) == ETHERTYPE_ARP && ntohs(receive_packet->opcode) == ARPOP_REPLY)
+        if (compareMac(receive_packet->eth_dst_mac, mymac) == 0 && receive_packet->arp_sender_ip == infect_addr_save->save_gateway_ip && ntohs(receive_packet->type) == ETHERTYPE_ARP && ntohs(receive_packet->opcode) == ARPOP_REPLY)
         {
             for (int i = 0; i < 6; i++)
             {
