@@ -3,7 +3,7 @@
 void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type)
 {
       u_int8_t pkt[PACKETSIZE];
-      insertPacketField(pkt, argv, type);
+      insertBroadcastField(pkt, argv, type);
 
       printf("%s\n", pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1 ? "error" : "BroadCast success");
 }
@@ -24,7 +24,7 @@ void insertFixedField(u_int8_t *pkt, u_int8_t opcode)
       send_packet->opcode = opcode == ARPOP_REQUEST ? ntohs(0x0001) : ntohs(0x0002);
 }
 
-void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type)
+void insertBroadcastField(u_int8_t *pkt, char *argv[], u_int8_t type)
 {
       struct eth_arp_header *send_packet = (struct eth_arp_header *)pkt;
 

@@ -48,7 +48,7 @@ struct infect_addr_save
 
 void sendBroadcast(char *argv[], pcap_t *pcap_handle, u_int8_t type);
 int compareMac(u_int8_t *mac1, u_int8_t *mac2);
-void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type);
+void insertBroadcastField(u_int8_t *pkt, char *argv[], u_int8_t type);
 void insertInfectPacketField(u_int8_t *pkt, void *arg, char current);
 void insertFixedField(u_int8_t *pkt, u_int8_t opcode);
 int getMyMacIp(char *dev);
