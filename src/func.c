@@ -52,7 +52,6 @@ void insertInfectPacketField(u_int8_t *pkt, void *arg, char current)
             infect->arp_sender_ip = infect_addr_save->save_gateway_ip;
             memcpy(infect->arp_target_mac, infect_addr_save->save_target_mac, 6);
             infect->arp_target_ip = infect_addr_save->save_target_ip;
-            current = GATEWAY;
       }
       else
       {
@@ -60,7 +59,6 @@ void insertInfectPacketField(u_int8_t *pkt, void *arg, char current)
             infect->arp_sender_ip = infect_addr_save->save_target_ip;
             memcpy(infect->arp_target_mac, infect_addr_save->save_gateway_mac, 6);
             infect->arp_target_ip = infect_addr_save->save_gateway_ip;
-            current = TARGET;
       }
 
       memcpy(infect->eth_src_mac, mymac, 6);

