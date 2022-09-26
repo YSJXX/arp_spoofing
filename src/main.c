@@ -10,7 +10,7 @@ void *thread_infect(void *arg) //감염패킷
     // 공격 대상과 Gateway에게 번갈아가며 감염 패킷 전송
     while (1)
     {
-        insertInfectPacketField((struct eth_arp_header *)pkt, (struct infect_addr_save *)arg, TARGET);
+        insertInfectPacketField(pkt, arg, TARGET);
         int res = pcap_sendpacket(pcap_handle, pkt, sizeof(pkt));
 
         if (res == -1)

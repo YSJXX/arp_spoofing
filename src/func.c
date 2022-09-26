@@ -38,8 +38,11 @@ void insertPacketField(u_int8_t *pkt, char *argv[], u_int8_t type)
       send_packet->arp_target_ip = type == TARGET ? inet_addr(argv[2]) : inet_addr(argv[3]);
 }
 
-void insertInfectPacketField(struct eth_arp_header *infect, struct infect_addr_save *infect_addr_save, char current)
+void insertInfectPacketField(u_int8_t *pkt, void *arg, char current)
 {
+      struct eth_arp_header *infect = (struct eth_arp_header *)pkt;
+      struct infect_addr_save *infect_addr_save = (struct infect_addr_save *)arg;
+
       if (current == TARGET)
       {
             memcpy(infect->eth_dst_mac, infect_addr_save->save_target_mac, 6);
