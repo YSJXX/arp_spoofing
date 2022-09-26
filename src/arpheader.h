@@ -18,6 +18,7 @@
 #pragma once
 u_int8_t broadcast_mac[6];
 u_int8_t mymac[6];
+char *dev;
 char myip[40];
 #pragma pack(push, 1)
 struct eth_arp_header

