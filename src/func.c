@@ -58,11 +58,11 @@ void insertInfectPacketField(struct eth_arp_header *infect, struct infect_addr_s
       }
 
       memcpy(infect->eth_src_mac, mymac, 6);
-      infect->type = ntohs(0x0806);          // ARP 0x0806
-      infect->hd_type = ntohs(0x0001);       // HardWare type : ethernet 1
-      infect->protocol_type = ntohs(0x0800); // Protocol type : IPv4 0x0800
-      infect->hd_size = 0x06;                // Hardware size 6 , Protocol size 4
-      infect->protocol_size = 0x04;          //
-      infect->opcode = ntohs(0x0002);        // OPcode 1 = request ,2 = reply
+      infect->type = ntohs(0x0806);
+      infect->hd_type = ntohs(0x0001);
+      infect->protocol_type = ntohs(0x0800);
+      infect->hd_size = 0x06;
+      infect->protocol_size = 0x04;
+      infect->opcode = ntohs(0x0002);
       memcpy(infect->arp_sender_mac, mymac, 6);
 }

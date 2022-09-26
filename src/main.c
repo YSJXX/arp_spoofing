@@ -140,7 +140,6 @@ int main(int argc, char *argv[])
     pthread_t thread[2];
     while (1)
     {
-        //감염 패킷 쓰레드
         pcap_next_ex(pcap_handle, &header, &packet);
         struct eth_arp_header *receive_packet = (struct eth_arp_header *)packet;
 
