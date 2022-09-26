@@ -16,13 +16,6 @@
 #include <pthread.h>
 
 #pragma once
-#define ARPHEADER_H
-#define REQUEST 1
-#define REPLY 2
-#define TARGET 100
-#define GATEWAY 101
-#define PACKETSIZE sizeof(struct eth_arp_header)
-
 u_int8_t broadcast_mac[6];
 u_int8_t mymac[6];
 char myip[40];
@@ -62,3 +55,7 @@ void insertInfectPacketField(struct eth_arp_header *infect, struct infect_addr_s
 #define ETHERTYPE_ARP 0x0806
 #define ARPOP_REQUEST 1
 #define ARPOP_REPLY 2
+#define ARPHEADER_H
+#define TARGET 100
+#define GATEWAY 101
+#define PACKETSIZE sizeof(struct eth_arp_header)
